@@ -1,0 +1,53 @@
+#!/usr/bin/env php
+<?php
+
+// define bitrix constants
+@define('BX_NO_ACCELERATOR_RESET', true);
+@define('DisableEventsCheck', true);
+@define('LANGUAGE_ID', 'ru');
+@define('LOG_FILENAME', 'php://stdout');
+@define('NO_AGENT_CHECK', true);
+@define('NO_AGENT_STATISTIC', 'Y');
+@define('NOT_CHECK_PERMISSIONS', true);
+@define('NO_KEEP_STATISTIC', true);
+@define('STOP_STATISTICS', true);
+
+// define php options
+@ini_set('error_log', 'php://stderr');
+@set_time_limit(0);
+@error_reporting(E_ERROR);
+
+// fix server variables
+$_SERVER['APP_ROOT'] = dirname(__DIR__);
+$_SERVER['DOCUMENT_ROOT'] = $_SERVER['APP_ROOT'] . '/public';
+
+// require bitrix prolog or composer autoload
+if (file_exists($_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/main/include/prolog_admin_before.php')) {
+    require_once $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/main/include/prolog_admin_before.php';
+} else {
+    require_once $_SERVER['APP_ROOT'] . '/vendor/autoload.php';
+}
+
+// define additional runtime constants
+defined('BX_DIR_PERMISSIONS') || define('BX_DIR_PERMISSIONS', 0755);
+defined('BX_FILE_PERMISSION') || define('BX_FILE_PERMISSION', 0664);
+
+// check environments
+if (!defined('DOTENV_LOADED') && class_exists('\\Crasivo\\Bitrix\\Dotenv\\EnvLocator')) {
+    Crasivo\Bitrix\Dotenv\EnvLocator::getInstance()->load($_SERVER['APP_ROOT']);
+}
+
+// start application
+$app = new Crasivo\Bitrix\Console\Application();
+
+try {
+    $app->init();
+    $app->run();
+    $status = 0; // success
+} catch (\Throwable $exception) {
+    $status = 1; // error
+    echo $exception->getMessage();
+    echo $exception->getTraceAsString();
+} finally {
+    $app->finish($status);
+}

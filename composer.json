@@ -1,0 +1,93 @@
+{
+  "name": "crasivo/bitrix-skeleton",
+  "description": "The basic project (skeleton) for developing websites on 1C-Bitrix & Bitrix24",
+  "keywords": [
+    "bitrix",
+    "project",
+    "skeleton"
+  ],
+  "type": "project",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Crasivo Dev",
+      "email": "crasivodev@gmail.com",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/crasivo/bitrix-skeleton/issues",
+    "source": "https://github.com/crasivo/bitrix-skeleton",
+    "email": "crasivodev@gmail.com"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "src/App/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "require": {
+    "php": ">=8.2",
+    "andreyryabin/sprint.migration": ">=5.0",
+    "crasivo/bitrix-console": "*",
+    "crasivo/bitrix-dotenv": "*",
+    "crasivo/bitrix-monolog": "*",
+    "crasivo/bitrix-whoops": "*"
+  },
+  "require-dev": {
+    "composer/installers": ">=2.0",
+    "phpstan/phpstan": ">=2.0",
+    "phpunit/phpunit": ">=12.0",
+    "symfony/var-dumper": ">=6.0"
+  },
+  "repositories": [
+    {
+      "type": "artifact",
+      "url": "composer/artifacts/"
+    },
+    {
+      "type": "path",
+      "url": "composer/packages/*"
+    }
+  ],
+  "scripts": {
+    "post-root-package-install": [
+      "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+    ],
+    "post-create-project-cmd": [
+      "@php bin/console crypto:key:generate --env",
+      "@php bin/console project:init"
+    ]
+  },
+  "extra": {
+    "installer-paths": {
+      "./bitrix/components/{$name}/": [
+        "type:bitrix-component",
+        "type:bitrix-d7-component"
+      ],
+      "./bitrix/modules/{$name}/": [
+        "type:bitrix-module",
+        "type:bitrix-d7-module"
+      ],
+      "./bitrix/templates/{$name}/": [
+        "type:bitrix-template",
+        "type:bitrix-d7-template"
+      ]
+    }
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true,
+    "allow-plugins": {
+      "composer/installers": true,
+      "php-http/discovery": true
+    }
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}

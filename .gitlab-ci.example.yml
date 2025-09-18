@@ -1,0 +1,65 @@
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Example configuration for Gitlab CI.
+# ----------------------------------------------------------------
+# Docs: https://docs.gitlab.com/ci/
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+stages:
+  - Deploy
+
+deploy_dev:
+  stage: Deploy
+  tags:
+    - deploy
+    - development
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^([0-9]+)\.([0-9]+)\.([0-9]+)(b[0-9]+)?$/'
+      exists:
+        - .env
+  environment: development
+  before_script:
+    - nvm install 22
+    - nvm use 22
+    - make bx-copy-settings
+    - make bx-make-symlinks
+  script:
+    - make bx-install-extensions
+    - make bx-build-extensions
+    - make bx-install-templates
+    - make bx-build-templates
+    - php bin/migrate up --config=cfg
+    - php bin/console cache:clear
+  after_script:
+    - sudo systemctl restart cron.service
+    - sudo systemctl restart httpd.service
+    - sudo systemctl restart nginx.service
+
+deploy_prod:
+  stage: Deploy
+  tags:
+    - deploy
+    - production
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^([0-9]+)\.([0-9]+)\.([0-9]+)(b[0-9]+)?$/'
+      exists:
+        - .env
+  environment: Production
+  before_script:
+    - nvm install 22
+    - nvm use 22
+    - make bx-copy-settings
+    - make bx-make-symlinks
+  script:
+    - echo "Install & build JS extensions"
+    - make bx-install-extensions
+    - make bx-build-extensions
+    - echo "Install & build templates"
+    - make bx-install-templates
+    - make bx-build-templates
+    - echo "Up migrations"
+    - php bin/migrate up --config=cfg
+    - php bin/console cache:clear
+  after_script:
+    - sudo systemctl restart cron.service
+    - sudo systemctl restart httpd.service
+    - sudo systemctl restart nginx.service

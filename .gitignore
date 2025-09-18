@@ -1,0 +1,29 @@
+# IDE
+/.idea
+/.vscode
+
+# Bitrix
+/bitrix
+/upload
+/tmp
+
+# Composer
+/.composer
+/composer.phar
+/composer.sha*
+/vendor
+
+# NodeJS
+/.yarn
+/node_modules
+
+# Environment
+/.env
+
+# Secret
+/*.key
+/*.pass
+
+# Misc
+*.bak
+*.orig

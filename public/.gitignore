@@ -1,0 +1,31 @@
+# Symlinks
+/bitrix
+/local
+/upload
+
+# Apache
+/.htpasswd
+
+# Internal scripts
+/adminer*
+/bitrixsetup.*
+/bitrix_server_test.*
+/restore.*
+
+# Tests
+/test*
+
+# Backups
+/*.gz
+/*.tar
+/*.tar.*
+/*.tgz
+/*.sql
+/*.zip
+
+# Logs
+/*.log
+
+# Misc
+.DS_Store
+Thumbs.db

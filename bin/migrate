@@ -1,0 +1,35 @@
+#!/usr/bin/env php
+<?php
+
+// define bitrix constants (system)
+@define('BX_NO_ACCELERATOR_RESET', true);
+@define('DisableEventsCheck', true);
+@define('LANGUAGE_ID', 'ru');
+@define('LOG_FILENAME', 'php://stdout');
+@define('NO_AGENT_CHECK', true);
+@define('NO_AGENT_STATISTIC', 'Y');
+@define('NO_KEEP_STATISTIC', true);
+@define('NOT_CHECK_PERMISSIONS', true);
+@define('STOP_STATISTICS', true);
+
+// error handling
+@error_reporting(E_ERROR ^ E_DEPRECATED);
+@error_clear_last();
+
+// define server variables (hard)
+$_SERVER['PROJECT_ROOT'] = dirname(__DIR__);
+$_SERVER['DOCUMENT_ROOT'] = $_SERVER['PROJECT_ROOT'] . '/public';
+
+/**
+ * Require bitrix prolog.
+ *
+ * @link https://dev.1c-bitrix.ru/api_help/main/general/pageplan.php
+ */
+require_once $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/main/include/prolog_admin_before.php';
+
+/**
+ * Require migrations tools.
+ *
+ * @link https://github.com/andreyryabin/sprint.migration
+ */
+require_once $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/sprint.migration/tools/migrate.php';
